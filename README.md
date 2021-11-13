@@ -246,6 +246,7 @@ END {
 	print "Found a total of " hobitses " hobitses"
 }
 ```
+
 * Let's break this down.
 * You see that this is an awk script because of the shebang (the line beginning with `#!/...`)
 * Before reading any input set the built in var IGNORECASE to 1. "frodo" will match "Frodo", "FRODO", "frodo", etc.
@@ -256,4 +257,140 @@ END {
 >>> increase hobitses by 1
 >>> print a message
 * After processing all the records print a message with value of our custom variable "hobitses".
+
+
+#### Options
+* You can pass options to awk. Here are some useful ones:
+* `-f` read awk source file. `awk -f source.awk file.txt`. You put all awk code in the source.awk file. NOTE - don't put the shebang (`#!/usr/bin/awk -f`)
+* `-F` - field separator. Use to define "words". For example if you have a csv you could make the separator a comma. Like this: `awk -F, '{print $2} file.txt ' - will print the second "word" separated by comma.
+* `-v` assign a variable. Eg: `awk -v count=0 '/bilbo/{count+=1;print "Found another one. Now count is " count}' f1`. init count to 0. On records matching `/bilbo/` increment count by 1. Print the message.
+* `-e` - execute commands. Use multiple awk commands. Eg: `awk -e 'BEGIN {IGNORECASE=1}' -e '/bilbo/{"Found him"}'`
+
+
+#### String concatenation
+* `print "hello" "world"` will output "helloworld". No space between.
+* `print "hello","world"` will output "hello world". A space between by using a comma in print.
+
+#### System commands
+* You can execute system commands like so `awk '{system("ls "$1" -la")}' file.txt `.
+* Let's break it down. We start by calling the system function on every record (line). We pass an argument built dynamically. "ls " followed by the first field (word) followed by " -l". If the field was "myfile.txt" the command would be "ls myfile.txt -la"
+* note the spaces at the end in "ls ". If you don't put the space the command would look like "lsmyfile.txt -la" which won't work obviously. 
+
+
+#### Writing dynamically to files
+* If you find a certain pattern you might like to write that to a file (with some extra info maybe).
+* `awk '/Bilbo/{print "I found him. First word is " $1 >> "appended.txt"}' file.txt `. It will append the print message (followed by first field(word)) to the file appended.txt
+* Use '>' instead of '>' to overwrite the file (instead of appending)
+
+
+#### System commands with stdin
+* You can pipe with print into certain system commands. Here's an example `awk '{print "file.txt" | "xargs -n1 ls -l"}'`
+* "file.txt" is piped into the command "xargs -n1 ls -l". Similar to `echo "file.txt" | xargs -n ls -l`
+* The advantage is that you can pass "dynamic" arguments. Certain fields (words) for example.
+
+#### Getline example
+* `"date" | getline cur_date` - run "date", store into variable cur_date. This a simple use for getline.
+* Here's a cooler one `awk '{"du "$0" |cut -f1" |getline cur_size;print "for file " $0 " size is " cur_size}' filenames.txt`
+* Let's break it down. "du "$0" |cut -f" will look like "du myfile.txt | cut -f1". This linux command will output the size of the file in kb.
+* We pass this value to the variable "cur_size". 
+* We use a colon to separate commands. Next we print the value of the variable "cur_size"
+
+
+#### $ - the positional variable
+* $ is not a "normal" variable but rather a function triggered by the dolar sign (according to grymoire awk tut)
+* `X=; print $X;` means `print $1`. 
+* You can do more fancy stuff with this. `'{print $(NF-1)}' - NF is the number of fields (words) in the record (line). `$NF` would be the last field (word) (if there are 5 fields NF is 5. $NF will point to the 5th field (word))
+
+#### Modify the positional variable
+* You can modify a certain field (word) and print the record (line) containing that modified field.
+* `echo "Meat's back on the menu" | awk '{$5="NO_MENUS_IN_ORC_LAND";print}'` will output `Meat's back on the NO_MENUS_IN_ORC_LAND`
+* We assign a value to field number 5. Then we print the record (print with no arguments prints the current record, just like `$print $0`)
+
+
+#### Selective .csv column print
+* You have a .csv in the form:
+```
+city,area,population
+LA,400,100
+Miami,500,101,
+Buenos Aires,800,102
+```
+* As you can see you have 3 columns. You would like to print the 1st and 3rd column only.
+* This should do the trick `awk -F, '{print $1,$3}' cities.csv`
+* We set a custom field (word) separator with `-F,`.
+* Note the comma between the positional arguments. IF you remember `{print "a" "b"}` will output "ab". You need comma to separate by space, `{print "a","b"}`. 
+* You can get fancy and skip the header row of the csv with `awk -F, '{if (NR>1) print $1,$3}' cities.csv `. If Number Recor is bigger than 1 (not the first) only then print. 
+
+#### Custom field separator with OFS
+* `{print "a", "b"}` will output "a b". When a comma is present awk uses the output field separator (OFS) which is a space by default.
+* You can change OFS to something else, like `::` for example. `{OFS="::";print "a", "b"}` will output `a::b`
+
+
+#### Mix with command line text
+* Let's say you have a file produced by the `ls` command, like this:
+```
+drwxr-xr-x  2 root root        69632 Nov 13 19:21 .
+drwxr-xr-x 16 root root         4096 Nov  9 07:35 ..
+-rwxr-xr-x  1 root root        59888 Dec  5  2020 [
+-rwxr-xr-x  1 root root        18456 Feb  7  2021 411toppm
+-rwxr-xr-x  1 root root           39 Aug 15  2020 7z
+-rwxr-xr-x  1 root root           40 Aug 15  2020 7za
+-rwxr-xr-x  1 root root           40 Aug 15  2020 7zr
+-rwxr-xr-x  1 root root        35344 Jul  1 00:42 aa-enabled
+-rwxr-xr-x  1 root root        35344 Jul  1 00:42 aa-exec
+```
+* you want to print the name of the executable but only if it's smaller than 50 bytes. Use this `awk '{if ($5<50) print $9}' bin_10 `
+* If the fifth field (containing size in bytes) is smaller than 50 print the 9th field (name of executable)
+
+#### Math on text.
+* This is one of the cool thigs about awk. You can take some text, perform all kinds of programming magic on it, spit it out nice and modified. Usually you need to write a lot of boilerplate if you're using a general scripting language like python. 
+* Let's take the cities csv again:
+```
+city,area,population
+LA,400,100
+Miami,500,101,
+Buenos Aires,800,102
+```
+* Check out this script.
+```
+#!/usr/bin/awk -f
+BEGIN {
+	total=0
+	FS=","
+}
+{
+	if (FNR>1) {
+		real_pop=$3 * 1000
+		total+=real_pop
+		print "Real population of", $1, "is" ,real_pop
+	}
+}
+
+END {
+	
+	print "Total Population:", total
+}
+```
+
+* The output will be:
+```
+Real population of LA is 100000
+Real population of Miami is 101000
+Real population of Buenos Aires is 102000
+Total Population: 303000
+```
+* By now you should understand what this does. We start by creating a variable and setting it to 0. We set the Field separator to a comma because we have a csv.
+* If the File Number Record is bigger than 1 do stuff (note how we use FNR, not NR. That's because we want to skip the header of every file, not just the first file).
+* We do some math, addition/multiplication. Finally we print the total. This works with multiple csv files. 
+* With a bit of care we could cram it on 1/2 lines in the terminal. 
+
+
+#### Fancy line numbers
+* Look at this beaut: `awk '{print "(" NR ")" ,$0}' f1`
+* It will print the line number in parenthesis followed by the actual line (from a file that doesn't have line numbering). Something like :
+```
+(1) line one
+(2) line two
+```
+* Carefully study the spaces and commas from print. We know that by not using a comman strings will be concatenated without any separator in between. So `"(" NR ")"` will output something like `(9)`. We could even dispense with the spaces in the command (`"("NR")"`) but I've kept them because they make things clearer. Next we print the actual line. Note the comma. It means awk will put a space (OFS) between the parenthesised line number and the actual line.
 
