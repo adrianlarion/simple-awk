@@ -19,6 +19,19 @@
 * Because I just told you you'll know that a record is a line by default. But you could change it to something else (by changing the RS - the Record Separator). You also know that a field is a word (separated by space) by default - but you could change it by changing the FS - Field Separator. 
 
 
+#### How to call awk
+* You call it like `awk '{print $0}' file1 file2`
+* In the examples below I only show the text inside '', not the full blown bash command.
+* If there are multiple files you have to use an awk script. Make a new file and put inside it:
+```
+#!/usr/bin/awk -f
+BEGIN {print "BEGINNING"}
+/Gollum/ {print "I like it raw and riggling"}
+```
+* Name it something like `myscript.awk` and make it executable with `chmod +x myscript.awk`
+* Call it with `./myscript.awk file1 file2`
+
+
 #### Example 1 
 
 * So you can read this awk program `/bilbo/ {print $0}` as: 
@@ -132,18 +145,115 @@ This Osgiliath is to drab for me.
 * `BEGINFILE {print "we are beginning to process " FILENAME}` will print the string followed by the name of the file when awk begin processing file. 
 * `NR` is the Record Number (or Number Record if you'd like). In simple terms it's the record (line) count. If awk is processing line number 5 then NR is 5. 
 * Let's say you have a 10 line file and a 5 line file. You pass both files to awk. Awk finishes the first 10 lines and is now ot line 3 from the second file. How much will the NR be? 
-* You might be tempted to say 3 - but it's 13. NR stands for ALL the lines that awk processes, not lines belonging to file.
-* If you want to refer to line count for file you would use FNR. F - from File. File Number Record. 
+* You might be tempted to say 3 - but it's 13. NR stands for ALL the records (lines) that awk processes, not records (lines) belonging to file.
+* If you want to refer to record (line) count for file you would use FNR. F - from File. File Number Record. 
 * In the case above NR would be 13 but FNR would be 3. 
 
 #### More Variables
 * Here's a list of the most important variables with a short description
 * `FILENAME` - name of file
-* `FNR` - File Number Record (input record number for current file -  according to official docs)
+* `FNR` - File Number Record (input record number for current file -  according to official docs). File record (line) count.
 * `FS` - Field separator (word separator if you'd like). Space by default. 
 * `IGNORECASE` - if set to 1 case is ignored. Very important. `/frodo/` would match `Have you seen my old ring Frodo?` if IGNORECASE is 1. If set to 0 it would not. Use it like this:
 ```
 BEGIN {IGNORECASE=1}
 /frodo/ {print "do you remember the taste of strawberries Frodo?"}
 ```
+* `NF` - number of fields (words) in the current record (line). You could use this to count words for example. 
+* `NR` - Number Record. Global record (line) count if you will.
+* `RS` - Record Separator. A newline by default.
+
+
+#### Programming intro
+* Awk is a full blown programming language. It has all the operators & syntax you would expect from a "regular" programming language such as C or python. 
+* This is taken directly from the manual
+```
+ Operators
+       The operators in AWK, in order of decreasing precedence, are:
+
+       (...)       Grouping
+
+       $           Field reference.
+
+       ++ --       Increment and decrement, both prefix and postfix.
+
+       ^           Exponentiation (** may also be used, and **= for the assignment operator).
+
+       + - !       Unary plus, unary minus, and logical negation.
+
+       * / %       Multiplication, division, and modulus.
+
+       + -         Addition and subtraction.
+
+       space       String concatenation.
+
+       |   |&      Piped I/O for getline, print, and printf.
+
+       < > <= >= == !=
+                   The regular relational operators.
+
+       ~ !~        Regular expression match, negated match.  NOTE: Do not use a constant regular expression (/foo/) on the left-hand side of a ~ or !~.  Only use one on the right-hand side.  The expression
+                   /foo/ ~ exp has the same meaning as (($0 ~ /foo/) ~ exp).  This is usually not what you want.
+
+  &&          Logical AND.
+
+       ||          Logical OR.
+
+       ?:          The  C  conditional  expression.  This has the form expr1 ? expr2 : expr3.  If expr1 is true, the value of the expression is expr2, otherwise it is expr3.  Only one of expr2 and expr3 is
+                   evaluated.
+
+       = += -= *= /= %= ^=
+                   Assignment.  Both absolute assignment (var = value) and operator-assignment (the other forms) are supported.
+
+   Control Statements
+       The control statements are as follows:
+
+              if (condition) statement [ else statement ]
+              while (condition) statement
+              do statement while (condition)
+              for (expr1; expr2; expr3) statement
+              for (var in array) statement
+              break
+              continue
+              delete array[index]
+              delete array
+              exit [ expression ]
+              { statements }
+              switch (expression) {
+              case value|regex : statement
+  ...
+              [ default: statement ]
+              }
+
+```
+
+
+#### Programming usage
+* Here's how you could use the "programming" part of awk:
+```
+#!/usr/bin/awk -f
+BEGIN {
+	IGNORECASE=1
+	hobitses=0
+}
+/fellowship/ {
+	if (index($0,"samwise") >0 ) {
+		hobitses+=1
+		print "Hurry up hobitses"
+	}
+}
+END {
+	print "Found a total of " hobitses " hobitses"
+}
+```
+* Let's break this down.
+* You see that this is an awk script because of the shebang (the line beginning with `#!/...`)
+* Before reading any input set the built in var IGNORECASE to 1. "frodo" will match "Frodo", "FRODO", "frodo", etc.
+* We also set a custom variable for our own usage and set its initial value to 0 (hobitses)
+* Check all records (lines) and on those that match `/fellowship/` execute the following:
+>> Check if we have the string "samwise" inside the record (line). index is a built in function. It takes two strings. If the second string is contained whithin the first it will return a value bigger than 0. If the second string is not present in the first return 0.
+>> If index() returns a value bigger than 0 ("samwise" was found inside the curent record (line)) do the following:
+>>> increase hobitses by 1
+>>> print a message
+* After processing all the records print a message with value of our custom variable "hobitses".
 
