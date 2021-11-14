@@ -12,7 +12,9 @@ Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should de
 [useful-sed](https://github.com/adrianscheff/useful-sed) - Useful sed tips, techniques & tricks for daily usage
 <br>
 [wizardly-tips-vim](https://github.com/adrianscheff/wizardly-tips-vim) - Less known Vim tips & tricks
+
 -----
+
 ### Before you start
 * PRACTICE! Don't just read the commands. Type them into the terminal yourself. Experiment!
 * Create some dummy files that will make experimentation easy. Use them with the examples below. Expand on them.
