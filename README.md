@@ -394,3 +394,161 @@ Total Population: 303000
 ```
 * Carefully study the spaces and commas from print. We know that by not using a comman strings will be concatenated without any separator in between. So `"(" NR ")"` will output something like `(9)`. We could even dispense with the spaces in the command (`"("NR")"`) but I've kept them because they make things clearer. Next we print the actual line. Note the comma. It means awk will put a space (OFS) between the parenthesised line number and the actual line.
 
+
+#### Print words by their number 
+* It's time to get fancy and change Field Separator and Record separator.
+* By default RS is a newline. What happens if you change it into an empty string? 
+* Vim  will load all the file in memory and treat it as a single record. 
+* FS (Field Separator)remains the same. But since the whole file it's treated as a single record the positional variable will refere to word number in FILE (not in record/line).
+* Sounds complicated? It's not. You have a file like this:
+```
+first second  third
+fourth fifth sixth
+seventh eight
+```
+* This is the awk script.
+```
+#!/usr/bin/awk -f
+BEGIN { RS="" }
+{
+		print $1, $8
+}
+```
+* It will output `first eight`. 
+* Look at the script again. If RS would be a newline `print $1, $8` would print something like:
+```
+first 
+fourth
+seventh
+```
+* It prints the first field on each record but since records are lines it can't find the eight field (word). 
+* But when the whole file is treated as a single record the positional variable ($) refers to field number in whole file. 
+* You can put this on a one liner and use it daily: `awk 'BEGIN{RS=""}{print $1020}' file.txt `
+
+
+#### Pass stdin to awk (and show nicely formatted size of files)
+* `ls -lh | awk '{print $9,"has size of",$5}'`
+* Generate text with `ls -lh` that looks somethin like:
+```
+-rwxr-xr-x  1 root root           39 Aug 15  2020 7z
+-rwxr-xr-x  1 root root           40 Aug 15  2020 7za
+-rwxr-xr-x  1 root root           40 Aug 15  2020 7zr
+```
+* pipe it to awk. Print field $9 (filename) and field $5 (size)
+
+
+
+#### Pass both stdin and file to awk
+* `echo "Coming from stdin" | awk "{print}" file.txt -`
+* In the above command awk first processes file.txt then stdin (passed by using the final dash)
+
+
+#### Check if text coming from stdin or file
+* `{ if (FILENAME!="-") print $0 }` it's the script.
+* When you pass it both stdin and files  `echo "Coming from stdin" | awk "{print}" file.txt -` awk won't process text from stdin.
+
+
+#### Arrays intro
+* `{myarr=["one","two","three"]}` - WON'T work, even though this is the syntax used by many languages to declare arays
+* Use instead something like `{myarr[0]="one";myarr[1]="two"}` 
+* Arrays are associative. You associate an index with a value. Like a dictionary.
+```
+#!/usr/bin/awk -f
+{
+		myarr["hobits"]="hobitses"
+		print(myarr["hobits"])
+}
+```
+* As you can see you can use strings and numbers as an index (as a key). In the end though array subscripts are always strings. 
+* That is `{print myarr[5.1]}` will check for an '5.1' string index. 
+
+#### Store lines in array
+```
+#!/usr/bin/awk -f
+/bilbo/ {
+		myarr[NR]=$0
+}
+END{
+		for (i in myarr){
+					print "subscript is",i
+							print myarr[i]
+								}
+}
+```
+* For each record (line) that matches `/bilbo/` store the record(line) in myarr, using the current NR (Number Record - or current line count) as a subscript/index
+
+* At the end enumerate over indexes in my arr (NOT over elements) with a 'for..in' loop. 
+* It will print something like:
+```
+subscript is 3
+a story by frodo and bilbo
+subscript is 13
+bilbo again and frodo
+```
+* Note how this array is not contigous. It is sparse. The indexes between 0-3 and 3-13 don't exist and are not assigned automatically. Kinda make sense since awk uses strings and NOT integers as indexes/subscripts.
+
+
+#### Delete array elems
+* `{delete myarr[1]}` will delete element at index '1' (where '1' is a string). 
+* `{delete myarr}` - will delete ALL elements of the array
+
+
+#### Array index concatenation
+```
+#!/usr/bin/awk -f
+BEGIN{
+	arr[1,2]="one"
+	arr["abc","bcd"]="two"
+	arr["abc",1]="three"
+	arr["foo" "bar"]="four"
+	arr["bar" "foo"]="five"
+	for (i in arr){
+		print "at index",i,"value is",arr[i]
+	}
+}
+```
+* Will output:
+```
+at index abc1 value is three
+at index abcbcd value is two
+at index foobar value is four
+at index barfoo value is five
+at index 12 value is one
+```
+* Awk treats integers as strings when used as array indexes. Then it concatenates them if you pass multiple values, either separated by space, comma or not separated at all. There is no space between these concatenated values.
+
+* Another thing to note is that the 'for..in' loop doesn't enumerate elems in the order they were added. 
+
+
+#### Ordered array indexes
+```
+#!/usr/bin/awk -f
+BEGIN{
+	i=0
+	arr[""]=0
+}
+/bilbo/{
+	arr[i++]=$0
+}
+END{
+	for (j=0;j<i;j++){
+		print "at index",j,"value is",arr[j]
+	}
+}
+```
+* Will output:
+```
+at index 0 value is a story by frodo and bilbo with ring
+at index 1 value is bilbo again and frodo and orcs
+```
+* We start by declaring a variable 'i' and assign a value zero. Then we initialize an empty array (using the empty string to declare a dummy zero value). We could skip the array initialization step and the output would be the same - BUT the code is clearer this way.
+* For every record that matches `/bilbo/` store the line. Use current value of 'i' as index and increment it afterwards. 
+* At the end use a for loop to enumerate. 'i' now has a value of the array size. We use the new variable 'j' to enumerate and check against 'i' which is array size.
+
+#### The power of printf
+`{printf("%d is nice but %.2f is better",1,2)}`
+* will output:
+`1 is nice but 2.00 is better`
+* printf is "formatted" print (thus the extra f). It uses escape sequences and format specifiers that should be familiar to most programmers.
+* `%d` is a decimal. `%f` is a float. `%.2f` - float with 2 digits. 
+
