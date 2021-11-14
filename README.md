@@ -3,8 +3,8 @@ Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should de
 
 # Recommended books (not written by me)
 [Definitive Guide to sed - by Daniel Goldman](https://amzn.to/2YJETKI)
-[Sed & Awk - Dale Dougherty & Arnold Robbins] (https://amzn.to/3nd0BjE)
-[Effective awk programming - by Arnold Robbins] (https://amzn.to/30xk6Lf)
+[Sed & Awk - Dale Dougherty & Arnold Robbins](https://amzn.to/3nd0BjE)
+[Effective awk programming - by Arnold Robbins](https://amzn.to/30xk6Lf)
 
 # More guides that I wrote
 [useful-sed](https://github.com/adrianscheff/useful-sed) - Useful sed tips, techniques & tricks for daily usage
