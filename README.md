@@ -1,8 +1,13 @@
 # Simple Awk
 * Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should decide this after you read this guide. 
-* Truth be told I'm also writing this for myself. With so many complex use cases it's easy to forget them all. 
+* Truth be told I'm also writing this for myself. With so many possible use cases it's easy to forget them all. 
 * I tried to make this as simple and clear as possible. Even complete awk newbs should be able to pick up this easily. 
 * I don't claim to be an awk guru. As such the way I express myself might not be up to official lingo. Or some techniques used here won't follow best practices. Kindly let me know and I'll correct if possible. 
+
+#### Before you start
+* PRACTICE! Don't just read the commands. Type them into the terminal yourself. Experiment!
+* Create some dummy files that will make experimentation easy. Use them with the examples below. Expand on them.
+
 
 #### Prerequisites
 * Make sure you have 'gawk' installed. It has more features than the usual default 'mawk'. You can see what implementation af awk you're using by typing `man awk` and looking at the header. If you have 'mawk' just install awk with `sudo apt-get install gawk`
@@ -24,7 +29,7 @@
 
 #### How to call awk
 * You call it like `awk '{print $0}' file1 file2`
-* In the examples below I only show the text inside '', not the full blown bash command.
+* In the examples below I sometimes show the text inside '', not the full blown bash command.
 * If there are multiple files you have to use an awk script. Make a new file and put inside it:
 ```
 #!/usr/bin/awk -f
@@ -59,7 +64,7 @@ BEGIN {print "BEGINNING"}
 #### Pattern OR Pattern
 * Check this other pattern out `/bilbo/||/frodo/{print "Is it you mister Frodo?"}`
 * You can read this as:
->> On each record (line) that matches `/bilbo/` OR `/baggins/`
+>> On each record (line) that matches `/bilbo/` OR `/frodo/`
 >>> print the string "Is it you mister Frodo?"
 
 
@@ -79,7 +84,7 @@ BEGIN {print "BEGINNING"}
 >>>> Does it also match `/ring/`? If yes then print "Either frodo with the ring, or the orcs"
 >>> If it doesn't match `/frodo/`
 >>>> Does it match `/orcs/`? If yes then print "Either frodo with the ring, or the orcs"
-* The actions are executed if: a record (line) contains either "frodo" and the "ring" OR no "frodo" and "ring" but "orcs". 
+* The actions are executed if: a record (line) contains either ("frodo" and the "ring") OR (no "frodo" and "ring") but "orcs". 
 
 
 #### Pattern Range
