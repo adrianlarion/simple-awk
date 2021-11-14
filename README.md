@@ -1,9 +1,16 @@
 # Simple Awk
 * Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should decide this after you read this guide. 
-* Truth be told I'm also writing this for myself. With so many possible use cases it's easy to forget them all. 
-* I tried to make this as simple and clear as possible. Even complete awk newbs should be able to pick up this easily. 
-* I don't claim to be an awk guru. As such the way I express myself might not be up to official lingo. Or some techniques used here won't follow best practices. Kindly let me know and I'll correct if possible. 
-* Some techniques will not be production code but dumbed down (or otherwise not 100% perfection)for demonstration purposes.
+
+# Recommended books (not written by me)
+[Definitive Guide to sed - by Daniel Goldman](https://amzn.to/2YJETKI)
+[Sed & Awk - Dale Dougherty & Arnold Robbins] (https://amzn.to/3nd0BjE)
+[Effective awk programming - by Arnold Robbins] (https://amzn.to/30xk6Lf)
+
+# More guides that I wrote
+[useful-sed](https://github.com/adrianscheff/useful-sed) - Useful sed tips, techniques & tricks for daily usage
+<br>
+[wizardly-tips-vim](https://github.com/adrianscheff/wizardly-tips-vim) - Less known Vim tips & tricks
+
 
 ### Before you start
 * PRACTICE! Don't just read the commands. Type them into the terminal yourself. Experiment!
@@ -996,6 +1003,10 @@ if (match($0,"frodo")){
 * Why? For every record start with `getline`. This command sets '$0' from the next input record - it basically reads the next line into '$0'. Print then prints the newly updated '$0'
 * `awk '{getline;getline;print}' file.txt` - print every third line of the file. We consume two lines then print the third one. And so on. Add more `getline` to increase `Nth` printing.
 
-
+# About
+* Truth be told I'm also writing this for myself. With so many possible use cases it's easy to forget them all. 
+* I tried to make this as simple and clear as possible. Even complete awk newbs should be able to pick up this easily. 
+* I don't claim to be an awk guru. As such the way I express myself might not be up to official lingo. Or some techniques used here won't follow best practices. Kindly let me know and I'll correct if possible. 
+* Some techniques will not be production code but dumbed down (or otherwise not 100% perfection)for demonstration purposes.
 
 
