@@ -13,6 +13,7 @@ Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should de
 <br>
 [wizardly-tips-vim](https://github.com/adrianscheff/wizardly-tips-vim) - Less known Vim tips & tricks
 
+<br>
 
 ### Before you start
 * PRACTICE! Don't just read the commands. Type them into the terminal yourself. Experiment!
