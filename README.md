@@ -1,6 +1,9 @@
 # Simple Awk
+* Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should decide this after you read this guide. 
+* Truth be told I'm also writing this for myself. With so many complex use cases it's easy to forget them all. 
+* I tried to make this as simple and clear as possible. Even complete awk newbs should be able to pick up this easily. 
+* I don't claim to be an awk guru. As such the way I express myself might not be up to official lingo. Or some techniques used here won't follow best practices. Kindly let me know and I'll correct if possible. 
 
-# Short Tut
 #### Prerequisites
 * Make sure you have 'gawk' installed. It has more features than the usual default 'mawk'. You can see what implementation af awk you're using by typing `man awk` and looking at the header. If you have 'mawk' just install awk with `sudo apt-get install gawk`
 
@@ -13,7 +16,7 @@
 
 
 #### Note about lines/records fields/words
-* Usually you'll want to keep working with records which are "lines". That is - strings delimited by newlines. I'll also be refering to records as lines to make things simpler. 
+* Usually you'll want to keep working with records which are "lines". That is - strings delimited by newlines. I'll also be referring to records as lines to make things simpler. 
 * You can change how awk interprets records. Then records will be other things which are not "lines" (like strings separated by commas for example).  
 * The same goes for fields. Fields are strings separated by space by default. You can change this of course to have the separator be a comma or something else.
 * Because I just told you you'll know that a record is a line by default. But you could change it to something else (by changing the RS - the Record Separator). You also know that a field is a word (separated by space) by default - but you could change it by changing the FS - Field Separator. 
@@ -50,7 +53,7 @@ BEGIN {print "BEGINNING"}
 #### Pattern AND Pattern
 * Patterns can be more complex. Check this out `/bilbo/&&/frodo/{print "my precious"}`
 * You can read this as:
->> On each record (line) that matchs `/bilbo/` AND `/baggins/`
+>> On each record (line) that matches `/bilbo/` AND `/baggins/`
 >>> print the string "my precious"
 
 #### Pattern OR Pattern
@@ -69,7 +72,7 @@ BEGIN {print "BEGINNING"}
 
 #### IF Pattern present then check for Pattern, ELSE check for Pattern
 * Here's a more complex example `/frodo/ ? /ring/ : /orcs/{ print "Either frodo with the ring, or the orcs" }`
-* `a?b:c` is a ternary operator. it reads: if a then do b, else do c.
+* `a?b:c` is a ternary operator. It reads: if a then do b, else do c.
 * Read it as:
 >> Read record.
 >>> If it matches `/frodo/`
@@ -119,7 +122,7 @@ This Osgiliath is to drab for me.
 
 
 #### BEGINFILE, ENDFILE Patterns
-* If you pass multiple files to awk - it will treat them as being one contigous file. But what if you want to call some commands when beginning to read input from a file? You use BEGINFILE and ENDFILE respectively.
+* If you pass multiple files to awk - it will treat them as being one contiguous file. But what if you want to call some commands when beginning to read input from a file? You use BEGINFILE and ENDFILE respectively.
 * `BEGINFILE {print "A new chapter is beginning mister Frodo"}`
 * It reads:
 >> Before input is read from a file
@@ -149,7 +152,7 @@ This Osgiliath is to drab for me.
 * `FILENAME` is the name of the current file being processed. 
 * `BEGINFILE {print "we are beginning to process " FILENAME}` will print the string followed by the name of the file when awk begin processing file. 
 * `NR` is the Record Number (or Number Record if you'd like). In simple terms it's the record (line) count. If awk is processing line number 5 then NR is 5. 
-* Let's say you have a 10 line file and a 5 line file. You pass both files to awk. Awk finishes the first 10 lines and is now ot line 3 from the second file. How much will the NR be? 
+* Let's say you have a 10 line file and a 5 line file. You pass both files to awk. Awk finishes the first 10 lines and is now at line 3 from the second file. How much will the NR be? 
 * You might be tempted to say 3 - but it's 13. NR stands for ALL the records (lines) that awk processes, not records (lines) belonging to file.
 * If you want to refer to record (line) count for file you would use FNR. F - from File. File Number Record. 
 * In the case above NR would be 13 but FNR would be 3. 
@@ -257,8 +260,8 @@ END {
 * Before reading any input set the built in var IGNORECASE to 1. "frodo" will match "Frodo", "FRODO", "frodo", etc.
 * We also set a custom variable for our own usage and set its initial value to 0 (hobitses)
 * Check all records (lines) and on those that match `/fellowship/` execute the following:
->> Check if we have the string "samwise" inside the record (line). index is a built in function. It takes two strings. If the second string is contained whithin the first it will return a value bigger than 0. If the second string is not present in the first return 0.
->> If index() returns a value bigger than 0 ("samwise" was found inside the curent record (line)) do the following:
+>> Check if we have the string "samwise" inside the record (line). Index is a built in function. It takes two strings. If the second string is contained within the first it will return a value bigger than 0. If the second string is not present in the first return 0.
+>> If index() returns a value bigger than 0 ("samwise" was found inside the current record (line)) do the following:
 >>> increase hobitses by 1
 >>> print a message
 * After processing all the records print a message with value of our custom variable "hobitses".
@@ -267,7 +270,7 @@ END {
 #### Options
 * You can pass options to awk. Here are some useful ones:
 * `-f` read awk source file. `awk -f source.awk file.txt`. You put all awk code in the source.awk file. NOTE - don't put the shebang (`#!/usr/bin/awk -f`)
-* `-F` - field separator. Use to define "words". For example if you have a csv you could make the separator a comma. Like this: `awk -F, '{print $2} file.txt ' - will print the second "word" separated by comma.
+* `-F` - field separator. Use to define "words". For example if you have a .csv you could make the separator a comma. Like this: `awk -F, '{print $2} file.txt ' - will print the second "word" separated by comma.
 * `-v` assign a variable. Eg: `awk -v count=0 '/bilbo/{count+=1;print "Found another one. Now count is " count}' f1`. init count to 0. On records matching `/bilbo/` increment count by 1. Print the message.
 * `-e` - execute commands. Use multiple awk commands. Eg: `awk -e 'BEGIN {IGNORECASE=1}' -e '/bilbo/{"Found him"}'`
 
@@ -280,6 +283,13 @@ END {
 * You can execute system commands like so `awk '{system("ls "$1" -la")}' file.txt `.
 * Let's break it down. We start by calling the system function on every record (line). We pass an argument built dynamically. "ls " followed by the first field (word) followed by " -l". If the field was "myfile.txt" the command would be "ls myfile.txt -la"
 * note the spaces at the end in "ls ". If you don't put the space the command would look like "lsmyfile.txt -la" which won't work obviously. 
+* It will output something like:
+```
+-rw-rw-r-- 1 me me 0 Nov 14 17:40 f1
+-rw-rw-r-- 1 me me 59 Nov 14 17:41 f2
+-rw-rw-r-- 1 me me 20 Nov 12 15:42 col1
+```
+* Basically we run `ls` on the first word of every file passed to awk.
 
 
 #### Writing dynamically to files
@@ -292,6 +302,10 @@ END {
 * You can pipe with print into certain system commands. Here's an example `awk '{print "file.txt" | "xargs -n1 ls -l"}'`
 * "file.txt" is piped into the command "xargs -n1 ls -l". Similar to `echo "file.txt" | xargs -n ls -l`
 * The advantage is that you can pass "dynamic" arguments. Certain fields (words) for example.
+* The output looks like:
+```
+-rw-rw-r-- 1 me me 0 Nov 14 17:40 file.txt
+```
 
 #### Getline example
 * `"date" | getline cur_date` - run "date", store into variable cur_date. This a simple use for getline.
@@ -324,7 +338,7 @@ Buenos Aires,800,102
 * This should do the trick `awk -F, '{print $1,$3}' cities.csv`
 * We set a custom field (word) separator with `-F,`.
 * Note the comma between the positional arguments. IF you remember `{print "a" "b"}` will output "ab". You need comma to separate by space, `{print "a","b"}`. 
-* You can get fancy and skip the header row of the csv with `awk -F, '{if (NR>1) print $1,$3}' cities.csv `. If Number Recor is bigger than 1 (not the first) only then print. 
+* You can get fancy and skip the header row of the csv with `awk -F, '{if (NR>1) print $1,$3}' cities.csv `. If Number Record is bigger than 1 (not the first) only then print. 
 
 #### Custom field separator with OFS
 * `{print "a", "b"}` will output "a b". When a comma is present awk uses the output field separator (OFS) which is a space by default.
@@ -348,8 +362,8 @@ drwxr-xr-x 16 root root         4096 Nov  9 07:35 ..
 * If the fifth field (containing size in bytes) is smaller than 50 print the 9th field (name of executable)
 
 #### Math on text.
-* This is one of the cool thigs about awk. You can take some text, perform all kinds of programming magic on it, spit it out nice and modified. Usually you need to write a lot of boilerplate if you're using a general scripting language like python. 
-* Let's take the cities csv again:
+* This is one of the cool things about awk. You can take some text, perform all kinds of programming magic on it, spit it out nice and modified. Usually you need to write a lot of boilerplate if you're using a general scripting language like python. 
+* Let's take the cities .csv again:
 ```
 city,area,population
 LA,400,100
@@ -397,14 +411,14 @@ Total Population: 303000
 (1) line one
 (2) line two
 ```
-* Carefully study the spaces and commas from print. We know that by not using a comman strings will be concatenated without any separator in between. So `"(" NR ")"` will output something like `(9)`. We could even dispense with the spaces in the command (`"("NR")"`) but I've kept them because they make things clearer. Next we print the actual line. Note the comma. It means awk will put a space (OFS) between the parenthesised line number and the actual line.
+* Carefully study the spaces and commas from print. We know that by not using a command strings will be concatenated without any separator in between. So `"(" NR ")"` will output something like `(9)`. We could even dispense with the spaces in the command (`"("NR")"`) but I've kept them because they make things clearer. Next we print the actual line. Note the comma. It means awk will put a space (OFS) between the parenthesised line number and the actual line.
 
 
 #### Print words by their number 
 * It's time to get fancy and change Field Separator and Record separator.
 * By default RS is a newline. What happens if you change it into an empty string? 
 * Vim  will load all the file in memory and treat it as a single record. 
-* FS (Field Separator)remains the same. But since the whole file it's treated as a single record the positional variable will refere to word number in FILE (not in record/line).
+* FS (Field Separator)remains the same. But since the whole file it's treated as a single record the positional variable will refer to word number in FILE (not in record/line).
 * Sounds complicated? It's not. You have a file like this:
 ```
 first second  third
@@ -433,7 +447,7 @@ seventh
 
 #### Pass stdin to awk (and show nicely formatted size of files)
 * `ls -lh | awk '{print $9,"has size of",$5}'`
-* Generate text with `ls -lh` that looks somethin like:
+* Generate text with `ls -lh` that looks something like:
 ```
 -rwxr-xr-x  1 root root           39 Aug 15  2020 7z
 -rwxr-xr-x  1 root root           40 Aug 15  2020 7za
@@ -454,7 +468,7 @@ seventh
 
 
 #### Arrays intro
-* `{myarr=["one","two","three"]}` - WON'T work, even though this is the syntax used by many languages to declare arays
+* `{myarr=["one","two","three"]}` - WON'T work, even though this is the syntax used by many languages to declare arrays
 * Use instead something like `{myarr[0]="one";myarr[1]="two"}` 
 * Arrays are associative. You associate an index with a value. Like a dictionary.
 ```
@@ -480,7 +494,7 @@ END{
 								}
 }
 ```
-* For each record (line) that matches `/bilbo/` store the record(line) in myarr, using the current NR (Number Record - or current line count) as a subscript/index
+* For each record (line) that matches `/bilbo/` store the record(line) in 'myarr', using the current NR (Number Record - or current line count) as a subscript/index
 
 * At the end enumerate over indexes in my arr (NOT over elements) with a 'for..in' loop. 
 * It will print something like:
@@ -490,7 +504,7 @@ a story by frodo and bilbo
 subscript is 13
 bilbo again and frodo
 ```
-* Note how this array is not contigous. It is sparse. The indexes between 0-3 and 3-13 don't exist and are not assigned automatically. Kinda make sense since awk uses strings and NOT integers as indexes/subscripts.
+* Note how this array is not contiguous. It is sparse. The indexes between 0-3 and 3-13 don't exist and are not assigned automatically. Kinda make sense since awk uses strings and NOT integers as indexes/subscripts.
 
 
 #### Delete array elems
@@ -556,10 +570,98 @@ at index 1 value is bilbo again and frodo and orcs
 `1 is nice but 2.00 is better`
 * printf is "formatted" print (thus the extra f). It uses escape sequences and format specifiers that should be familiar to most programmers.
 * `%d` is a decimal. `%f` is a float. `%.2f` - float with 2 digits. 
+* Here are all the format specifiers (taken from awk man):
+```
+The printf Statement
+       The  AWK  versions of the printf statement and sprintf() function (see
+       below) accept the following conversion specification formats:
+
+       %a, %A  A floating point number  of  the  form  [-]0xh.hhhhp+-dd  (C99
+               hexadecimal floating point format).  For %A, uppercase letters
+               are used instead of lowercase ones.
+
+       %c      A single character.  If the argument used for %c  is  numeric,
+               it  is treated as a character and printed.  Otherwise, the ar‐
+               gument is assumed to be a string, and the only first character
+               of that string is printed.
+
+       %d, %i  A decimal number (the integer part).
+
+       %e, %E  A  floating  point number of the form [-]d.dddddde[+-]dd.  The
+               %E format uses E instead of e.
+
+       %f, %F  A floating point number of the  form  [-]ddd.dddddd.   If  the
+               system  library  supports it, %F is available as well. This is
+               like %f, but uses capital letters for special “not  a  number”
+               and “infinity” values. If %F is not available, gawk uses %f.
+
+       %g, %G  Use %e or %f conversion, whichever is shorter, with nonsignif‐
+               icant zeros suppressed.  The %G format uses %E instead of %e.
+
+       %o      An unsigned octal number (also an integer).
+
+       %u      An unsigned decimal number (again, an integer).
+
+       %s      A character string.
+
+       %x, %X  An unsigned hexadecimal number (an integer).   The  %X  format
+               uses ABCDEF instead of abcdef.
+
+       %%      A single % character; no argument is converted.
+
+       Optional,  additional parameters may lie between the % and the control
+       letter:
+
+       count$ Use the count'th argument at  this  point  in  the  formatting.
+              This is called a positional specifier and is intended primarily
+              for use in translated versions of format strings,  not  in  the
+              original text of an AWK program.  It is a gawk extension.
+
+       -      The expression should be left-justified within its field.
+
+       space  For  numeric  conversions, prefix positive values with a space,
+              and negative values with a minus sign.
+
+       +      The plus sign, used before the width modifier (see below), says
+              to  always  supply  a sign for numeric conversions, even if the
+              data to be formatted is positive.  The +  overrides  the  space
+              modifier.
+
+  #      Use  an  “alternate form” for certain control letters.  For %o,
+              supply a leading zero.  For %x, and %X, supply a leading 0x  or
+              0X for a nonzero result.  For %e, %E, %f and %F, the result al‐
+              ways contains a decimal point.  For %g, and %G, trailing  zeros
+              are not removed from the result.
+
+       0      A  leading  0  (zero)  acts  as  a flag, indicating that output
+              should be padded with zeroes instead of spaces.   This  applies
+              only  to the numeric output formats.  This flag only has an ef‐
+              fect when the field  width  is  wider  than  the  value  to  be
+              printed.
+
+       '      A  single quote character instructs gawk to insert the locale's
+              thousands-separator character into decimal numbers, and to also
+              use  the  locale's  decimal point character with floating point
+              formats.  This requires correct locale support in the C library
+              and in the definition of the current locale.
+
+       width  The  field  should  be padded to this width.  The field is nor‐
+              mally padded with spaces.  With the 0 flag, it is  padded  with
+              zeroes.
+
+       .prec  A  number  that  specifies  the precision to use when printing.
+              For the %e, %E, %f and %F, formats, this specifies  the  number
+              of  digits  you want printed to the right of the decimal point.
+              For the %g, and %G formats, it specifies the maximum number  of
+              significant  digits.   For  the %d, %i, %o, %u, %x, and %X for‐
+              mats, it specifies the minimum number of digits to print.   For
+              the  %s  format,  it specifies the maximum number of characters
+              from the string that should be printed.
+```
 
 
 #### Selective file processing
-* You can skip processing certain files using a combo of FILENAME and nextfile commadn
+* You can skip processing certain files using a combo of FILENAME and nextfile command
 ```
 #!/usr/bin/awk -f
 {
@@ -656,10 +758,10 @@ BEGIN {
 ```
 * will output:
 `lot`
-* substring returns a portion of the string. first arg is the string. second is the index from where to start cutting. The indexing begins from 1, NOT 0. So first char is at index 1. The final (optional) arg is the length of the cut. 
+* substring returns a portion of the string. First arg is the string. Second is the index from where to start cutting. The indexing begins from 1, NOT 0. So first char is at index 1. The final (optional) arg is the length of the cut. 
 * Read it as: get 3 chars from the first char (including the first char). 
 * If you don't pass the third arg (length) it will cut until the end of string.
-* Use it in a oneliner to print the first X chars of every line ` awk '{print substr($0,1,10)}' file.txt`
+* Use it in a one-liner to print the first X chars of every line ` awk '{print substr($0,1,10)}' file.txt`
 
 
 #### String funcs - gensub
@@ -673,7 +775,7 @@ BEGIN {
 ```
 * will output:
 ` Run Shadowfax. Show us the meaning of haste.`
-* first arg is the regex to search for. Second is the replacement string. Third is a flag. It can be "g" for global or an integer. If it's "g" it replaces all occurences of regex in mystring. If it's for example 2 it will replace only the second occurence of regex. The last arg is the target string (where to do search & replace)
+* first arg is the regex to search for. Second is the replacement string. Third is a flag. It can be "g" for global or an integer. If it's "g" it replaces all occurrences of regex in mystring. If it's for example 2 it will replace only the second occurrence of regex. The last arg is the target string (where to do search & replace)
 * gensub will return a new string, leaving the original intact. 
 * If you look at it you'll notice that it's similar to sed's substitute: `s/[Hh]ali/Shadow/g`
 * If the last (target) string not supplied, use $0 (the current record)
@@ -682,13 +784,13 @@ BEGIN {
 
 #### String func - gsub
 * gsub is similar to gensub but has some diffs. It doesn't take the flag argument and replaces globally by default. It also performs search & replace directly on the target string. It returns the number of substitutions (whereas gensub() returns the modified string)
-* This make it very useful for modifying records nicely and rapidely. 
+* This make it very useful for modifying records nicely and rapidly. 
 * `awk '{gsub(/bilbo/,"MASTER BILBO");print}' file.txt` will search for `/bilbo/` on the current record (line) and replace it with "MASTER BILBO". 
 
 
 #### String func - sub
-* Just like gsub() but only replaces the FIRST occurence.
-* `awk '{sub(/bilbo/,"MASTER BILBO");print}' file.txt` will search for `/bilbo/` on the current record (line) and replace it with "MASTER BILBO", just the FIRST occurence on the record
+* Just like gsub() but only replaces the FIRST occurrence.
+* `awk '{sub(/bilbo/,"MASTER BILBO");print}' file.txt` will search for `/bilbo/` on the current record (line) and replace it with "MASTER BILBO", just the FIRST occurrence on the record
 
 
 #### String func - match
