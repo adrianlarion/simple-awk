@@ -71,7 +71,7 @@ BEGIN {print "BEGINNING"}
 ### Pattern AND Pattern
 * Patterns can be more complex. Check this out `/bilbo/&&/frodo/{print "my precious"}`
 * You can read this as:
->> On each record (line) that matches `/bilbo/` AND `/baggins/`
+>> On each record (line) that matches `/bilbo/` AND `/frodo/`
 >>> print the string "my precious"
 
 ### Pattern OR Pattern
