@@ -12,6 +12,8 @@ Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should de
 [useful-sed](https://github.com/adrianscheff/useful-sed) - Useful sed tips, techniques & tricks for daily usage
 <br>
 [wizardly-tips-vim](https://github.com/adrianscheff/wizardly-tips-vim) - Less known Vim tips & tricks
+<br>
+[quick-grep](https://github.com/adrianscheff/quick-grep) - Quick grep reference and tutorial.
 
 -----
 
