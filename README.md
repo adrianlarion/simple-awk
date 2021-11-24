@@ -14,6 +14,8 @@ Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should de
 [wizardly-tips-vim](https://github.com/adrianscheff/wizardly-tips-vim) - Less known Vim tips & tricks
 <br>
 [quick-grep](https://github.com/adrianscheff/quick-grep) - Quick grep reference and tutorial.
+<br>
+[convenient-utils-linux](https://github.com/adrianscheff/convenient-utils-linux) - Linux utils to make life easier and more convenient. 
 
 -----
 
