@@ -5,24 +5,10 @@ Possibly this guide could make learning awk simple?
 Ha-ha, you should decide this after you read this guide. 
 
 ## [Recommended books (not written by me)](recommended.md)
-
 ## [Similar Github Guides](notables.md)
+## [Prerequisites](prerequisites.md)
 
-### Before you start
-* PRACTICE! Don't just read the commands. Type them into the terminal yourself. Experiment!
-* Create some dummy files that will make experimentation easy. Use them with the examples below. Expand on them.
-
-
-### Prerequisites
-* Make sure you have 'gawk' installed. It has more features than the usual default 'mawk'. You can see what implementation af awk you're using by typing `man awk` and looking at the header. If you have 'mawk' just install awk with `sudo apt-get install gawk`
-
-### Intro
-* Awk operates on records and fields. A record is by default a line. A field is a "word" by default. You can change how a record/field is defined by changing the field separator var (FS) and the record separator (RS).
-* You give awk some files on which to operate. Awk starts reading records (lines) from these files one by one. It splits each record (line) into fields (words). 
-* In your awk program you have code that will look like this  `/bilbo/ {print $0}`. `/bilbo/` is a pattern. `{print $0}` is an action (inside the curly braces). 
-* On each record (line) that matches pattern (`/bilbo/`) execute actions inside curly braces (`{print $0}`). 
-* The special variable `$0` represents the whole record (line). `print` prints.
-
+# [Introduction](intro.md)
 
 ### Note about lines/records fields/words
 * Usually you'll want to keep working with records which are "lines". That is - strings delimited by newlines. I'll also be referring to records as lines to make things simpler. 
