@@ -985,10 +985,4 @@ if (match($0,"frodo")){
 * Why? For every record start with `getline`. This command sets '$0' from the next input record - it basically reads the next line into '$0'. Print then prints the newly updated '$0'
 * `awk '{getline;getline;print}' file.txt` - print every third line of the file. We consume two lines then print the third one. And so on. Add more `getline` to increase `Nth` printing.
 
-# About
-* Truth be told I'm also writing this for myself. With so many possible use cases it's easy to forget them all. 
-* I tried to make this as simple and clear as possible. Even complete awk newbs should be able to pick up this easily. 
-* I don't claim to be an awk guru. As such the way I express myself might not be up to official lingo. Or some techniques used here won't follow best practices. Kindly let me know and I'll correct if possible. 
-* Some techniques will not be production code but dumbed down (or otherwise not 100% perfection)for demonstration purposes.
-
-
+# [About](about.md)
