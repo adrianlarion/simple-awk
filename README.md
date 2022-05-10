@@ -1,4 +1,4 @@
-# Simple Awk
+# Simpler Awk
 Is awk simple? Or this guide will make learning awk simple? Ha-ha, you should decide this after you read this guide. 
 
 # Recommended books (not written by me)
