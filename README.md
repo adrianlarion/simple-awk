@@ -4,9 +4,9 @@ Possibly this guide could make learning awk simple?
 
 Ha-ha, you should decide this after you read this guide. 
 
-# [Recommended books (not written by me)](recommended.md)
+## [Recommended books (not written by me)](recommended.md)
 
-# [Similar Guides](notables.md)
+## [Similar Guides](notables.md)
 
 ### Before you start
 * PRACTICE! Don't just read the commands. Type them into the terminal yourself. Experiment!
