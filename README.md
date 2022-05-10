@@ -6,16 +6,7 @@ Ha-ha, you should decide this after you read this guide.
 
 # [Recommended books (not written by me)](recommended.md)
 
-# More guides that I wrote
-[useful-sed](https://github.com/adrianscheff/useful-sed) - Useful sed tips, techniques & tricks for daily usage
-<br>
-[wizardly-tips-vim](https://github.com/adrianscheff/wizardly-tips-vim) - Less known Vim tips & tricks
-<br>
-[quick-grep](https://github.com/adrianscheff/quick-grep) - Quick grep reference and tutorial.
-<br>
-[convenient-utils-linux](https://github.com/adrianscheff/convenient-utils-linux) - Linux utils to make life easier and more convenient. 
-
------
+# [Similar Guides](notables.md)
 
 ### Before you start
 * PRACTICE! Don't just read the commands. Type them into the terminal yourself. Experiment!
